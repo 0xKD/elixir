@@ -34,8 +34,8 @@ defmodule Sender do
 
   def notify_async_await(emails) do
     # await is blocking, has default 5s timeout and will kill the task
-    # if it doesn't return until then
-    # Enum.map instead of Enum.each because we need to use the results
+    # if it doesn't return until end of the timeout
+    # Enum.map instead of Enum.each because it returns the result
     emails
       |> Enum.map(fn email -> Task.async(fn -> send_email(email) end) end)
       |> Enum.map(&Task.await/1)
