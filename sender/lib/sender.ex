@@ -16,6 +16,10 @@ defmodule Sender do
     :world
   end
 
+  def send_email("hello@world.com" = email) do
+    raise "#{email} is meant to fail!"
+  end
+
   def send_email(email) do
     Process.sleep(2000)
     IO.puts("Email to #{email} sent")
@@ -39,6 +43,22 @@ defmodule Sender do
     emails
       |> Enum.map(fn email -> Task.async(fn -> send_email(email) end) end)
       |> Enum.map(&Task.await/1)
+  end
+
+  def notify_stream(emails) do
+    emails
+    |> Task.async_stream(&send_email/1)
+    # optional arguments, ordering=true by default, and there's a default timeout of 5s
+    # if a task reaches the timeout, the stream crahes (!)
+    #
+    # |> Task.async_stream(&send_email/1, max_concurrency: 2, ordered: false, on_timeout: :kill_task)
+    |> Enum.to_list()
+  end
+
+  def notify_safe_stream(emails) do
+    Sender.EmailTaskSupervisor
+    |> Task.Supervisor.async_stream_nolink(emails, &send_email/1)
+    |> Enum.to_list()
   end
 end
 

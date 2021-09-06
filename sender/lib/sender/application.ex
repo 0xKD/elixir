@@ -5,10 +5,12 @@ defmodule Sender.Application do
 
   use Application
 
+  # not fully clear what's happening here, do some research
   def start(_type, _args) do
     children = [
       # Starts a worker by calling: Sender.Worker.start_link(arg)
       # {Sender.Worker, arg}
+      {Task.Supervisor, name: Sender.EmailTaskSupervisor}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
