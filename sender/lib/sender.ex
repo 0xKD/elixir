@@ -16,8 +16,9 @@ defmodule Sender do
     :world
   end
 
-  def send_email("hello@world.com" = email) do
-    raise "#{email} is meant to fail!"
+  def send_email("hello@world.com" = _email) do
+    # raise "#{email} is meant to fail!"
+    :error
   end
 
   def send_email(email) do
@@ -41,8 +42,8 @@ defmodule Sender do
     # if it doesn't return until end of the timeout
     # Enum.map instead of Enum.each because it returns the result
     emails
-      |> Enum.map(fn email -> Task.async(fn -> send_email(email) end) end)
-      |> Enum.map(&Task.await/1)
+    |> Enum.map(fn email -> Task.async(fn -> send_email(email) end) end)
+    |> Enum.map(&Task.await/1)
   end
 
   def notify_stream(emails) do
@@ -61,4 +62,3 @@ defmodule Sender do
     |> Enum.to_list()
   end
 end
-
