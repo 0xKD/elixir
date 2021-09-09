@@ -15,17 +15,17 @@ defmodule Jobber.Application do
     config = [
       strategy: :one_for_one,
       max_seconds: 30,
-      name: Jober.JobRunner
+      # this name is used to find the process using Process.whereis/1
+      name: Jobber.JobRunner
     ]
 
     children = [
-      # Starts a worker by calling: Jobber.Worker.start_link(arg)
-      # {Jobber.Worker, arg}
+      # Registry acts as k-v store to maintain process names as strings
+      # it is being included here to run as a process under the supervisor
+      {Registry, keys: :unique, name: Jobber.JobRegistry},
       {DynamicSupervisor, config}
     ]
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Jobber.Supervisor]
     Supervisor.start_link(children, opts)
   end
