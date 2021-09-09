@@ -6,8 +6,12 @@ defmodule Jobber.Application do
   use Application
 
   def start(_type, _args) do
-    # todo: figure out max_seconds and max_restarts
-    # supervisor will restart if a process keeps failing
+    # Supervisor will restart a process that keeps failing.
+    # A process under the supervisor can restart upto 'max_restarts'
+    # times within 'max_seconds' before it will crash (for good)
+    #
+    # If the process takes a while to crash, it may keep restarting
+    # forever with default values for max_restarts (3) and max_seconds (5)
     config = [
       strategy: :one_for_one,
       max_seconds: 30,

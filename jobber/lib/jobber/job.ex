@@ -3,7 +3,8 @@ defmodule Jobber.Job do
   use GenServer, restart: :transient
   require Logger
 
-  # todo: figure out working of defstruct
+  # define a struct, this takes the name of the module
+  # behaves like a map for the most part
   defstruct [:work, :id, :max_retries, retries: 0, status: "new"]
 
   def init(args) do
