@@ -16,6 +16,14 @@ defmodule Scraper do
     :world
   end
 
+  def online?(_url) do
+    # pretend work
+    work()
+
+    # 33% chance of being offline
+    Enum.random([true, false, true])
+  end
+
   def work() do
     # 1..5 is a "range"
     #

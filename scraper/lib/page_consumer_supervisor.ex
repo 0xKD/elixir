@@ -26,7 +26,15 @@ defmodule PageConsumerSupervisor do
       strategy: :one_for_one,
       # max_demand here indicates the max number of child
       # (SupervisorConsumer) processes that can run concurrently
-      subscribe_to: [{PageProducer, max_demand: 2}]
+      #
+      # from before OnlinePageProducerConsumer was introduced
+      # subscribe_to: [{PageProducer, max_demand: 2}]
+      # when OPPC was a singled un-named process
+      # subscribe_to: [{OnlinePageProducerConsumer, max_demand: 2}]
+      subscribe_to: [
+        {OnlinePageProducerConsumer.via("online_page_producer_consumer_1"), []},
+        {OnlinePageProducerConsumer.via("online_page_producer_consumer_2"), []}
+      ]
     ]
 
     ConsumerSupervisor.init(children, opts)
